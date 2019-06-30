@@ -1,6 +1,6 @@
 # React-Native-APIFetchData
 
-React-native API FetchData <br>
+React-native API FetchData with swipe refresh <br>
 GET Request:<br>
 POST requests:
 <br><br>
