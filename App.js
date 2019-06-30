@@ -7,7 +7,7 @@
  */
 
 import React, {Component} from 'react';
-import {Dimensions,FlatList,ActivityIndicator,Platform,TouchableOpacity, StyleSheet, Text, View} from 'react-native';
+import {ScrollView,RefreshControl,Dimensions,FlatList,ActivityIndicator,Platform,TouchableOpacity, StyleSheet, Text, View} from 'react-native';
 import CardView from 'react-native-cardview'
 type Props = {};
   var test=""
@@ -17,7 +17,11 @@ export default class App extends Component<Props> {
     loading: true,
     dataSource: [],
   }
-
+  _onRefresh = () => {
+     this.setState({refreshing: true});
+     this.setState({dataSource: []});
+      this.getDataApi();
+   }
   render(){
   if(this.state.loading){
    return(
@@ -26,7 +30,15 @@ export default class App extends Component<Props> {
     </View>
 )}
 return(
- <View style={styles.container}>
+  <ScrollView
+       refreshControl={
+     <RefreshControl
+       refreshing={this.state.loading}
+       onRefresh={this._onRefresh}
+     />
+   }>
+
+
  <FlatList
  style={{margin:10}}
     data= {this.state.dataSource}
@@ -34,7 +46,8 @@ return(
     renderItem= {item=> this.renderItem(item)}
     keyExtractor= {item=>item.id.toString()}
  />
-</View>
+
+</ScrollView>
 )}
 renderItem=(data)=>
 <CardView
@@ -49,6 +62,10 @@ style={{margin:10,width:width-40,padding:15}}
 </CardView>
   componentDidMount(){
     //Get APi
+    this.getDataApi();
+
+}
+getDataApi(){
   fetch("https://jsonplaceholder.typicode.com/users")
   .then(response => response.json())
   .then((responseJson)=> {
@@ -59,8 +76,7 @@ style={{margin:10,width:width-40,padding:15}}
   })
   .catch(error=>console.log(error)) //to catch the errors if any
   }
-  // Post ReactApiCall
-
+// Post ReactApiCall
   getDataUsingPost(){
     //POST json
     var dataToSend = {title: 'foo', body: 'bar', userId: 1};
